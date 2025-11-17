@@ -1,5 +1,6 @@
 package com.example.catchnum;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,10 @@ public class ScoreActivity extends AppCompatActivity {
     private TextView correctAttempts;
     private Button back;
 
+
+    private TextView playerName;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,16 +28,19 @@ public class ScoreActivity extends AppCompatActivity {
         gamesPlayed = findViewById(R.id.totalGames);
         correctAttempts = findViewById(R.id.correct);
         back = findViewById(R.id.button);
+        playerName = findViewById(R.id.playerName);
+
         back.setOnClickListener(view -> finish());
 
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        Intent intent = getIntent();
+            int totalGames = intent.getIntExtra("TOTAL_GAMES", 0);
+            int totalCorrect = intent.getIntExtra("TOTAL_CORRECT_ATTEMPTS", 0);
+            String name = intent.getStringExtra("PLAYERNAME");
 
-            int totalGames = extras.getInt("TOTAL_GAMES", 0);
-            int totalCorrect = extras.getInt("TOTAL_CORRECT_ATTEMPTS", 0);
             gamesPlayed.setText(String.valueOf(totalGames));
             correctAttempts.setText(String.valueOf(totalCorrect));
+           playerName.setText(name+" "); // ← عرض الاسم الصحيح
         }
 
 

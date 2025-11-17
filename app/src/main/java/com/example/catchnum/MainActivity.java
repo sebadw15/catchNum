@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private Random rand = new Random();
     private int count=0,winSum=0,tgame=1;
 
+    private EditText name;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         newgame = findViewById(R.id.newgame);
         start = findViewById(R.id.startstop);
         score=findViewById(R.id.scoreGame);
+        name = findViewById(R.id.editTextText);
 
         n1.setText(String.valueOf(rand.nextInt(40) + 1));
         n2.setText(String.valueOf(rand.nextInt(40) + 1));
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         n2.setBackgroundColor(0xffff0000);
                     }
 
-                    if (n3.getText().toString  ().equals(drawn)){
+                    if (n3.getText().toString().equals(drawn)){
                         winSum++;
                         counttrue++;
                         numbers.setText(counttrue+" out of 6");
@@ -186,15 +190,22 @@ public class MainActivity extends AppCompatActivity {
         score.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                Intent intent=new Intent(MainActivity.this,ScoreActivity.class);
-                                startActivity(intent);
+
+                String name2 = name.getText().toString().trim(); // ← خذ الاسم هنا بعد ما المستخدم يكتبه
+
+
+
+                Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
+                intent.putExtra("TOTAL_GAMES", tgame);
+                intent.putExtra("TOTAL_CORRECT_ATTEMPTS", winSum);
+                intent.putExtra("PLAYERNAME", name2);
+
+                startActivity(intent);
             }
-
-
-
         });
 
-        }
+
+    }
 
 
 }
