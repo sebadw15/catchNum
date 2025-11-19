@@ -1,5 +1,7 @@
 package com.example.catchnum;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,13 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView n1, n2, n3, n4, n5, n6, random, numbers;
     private int counttrue=0;
-    private Button start, newgame,score;
+    private Button start, newgame,score,exit;
     private boolean isRunning;
     private Random rand = new Random();
     private int count=0,winSum=0,tgame=1;
 
     private EditText name;
-
+    private AlertDialog dialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -57,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
         random = findViewById(R.id.randNum);
         newgame = findViewById(R.id.newgame);
         start = findViewById(R.id.startstop);
-        score=findViewById(R.id.scoreGame);
+        score = findViewById(R.id.scoreGame);
         name = findViewById(R.id.editTextText);
+        exit = findViewById(R.id.button2);
 
         n1.setText(String.valueOf(rand.nextInt(40) + 1));
         n2.setText(String.valueOf(rand.nextInt(40) + 1));
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 tgame++;
-                if(count>5){
+                if (count > 5) {
                     n1.setText(String.valueOf(rand.nextInt(40) + 1));
                     n2.setText(String.valueOf(rand.nextInt(40) + 1));
                     n3.setText(String.valueOf(rand.nextInt(40) + 1));
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     numbers.setText("");
                     start.setText("start");
                     isRunning = false;
-                    count=0;
+                    count = 0;
                     n1.setBackgroundColor(0);
                     n2.setBackgroundColor(0);
                     n3.setBackgroundColor(0);
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isRunning&&count<6) {
+                if (!isRunning && count < 6) {
                     count++;
                     isRunning = true;
                     start.setText("stop");
@@ -137,48 +140,48 @@ public class MainActivity extends AppCompatActivity {
                     start.setText("start");
                     start.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                     String drawn = random.getText().toString();
-                    counttrue=0;
+                    counttrue = 0;
 
-                    if (n1.getText().toString().equals(drawn)){
+                    if (n1.getText().toString().equals(drawn)) {
                         winSum++;
                         counttrue++;
-                        numbers.setText(counttrue+" out of 6");
+                        numbers.setText(counttrue + " out of 6");
                         n1.setBackgroundColor(0xffff0000);
 
                     }
 
-                    if (n2.getText().toString().equals(drawn)){
+                    if (n2.getText().toString().equals(drawn)) {
                         winSum++;
                         counttrue++;
-                        numbers.setText(counttrue+" out of 6");
+                        numbers.setText(counttrue + " out of 6");
                         n2.setBackgroundColor(0xffff0000);
                     }
 
-                    if (n3.getText().toString().equals(drawn)){
+                    if (n3.getText().toString().equals(drawn)) {
                         winSum++;
                         counttrue++;
-                        numbers.setText(counttrue+" out of 6");
+                        numbers.setText(counttrue + " out of 6");
                         n3.setBackgroundColor(0xffff0000);
                     }
 
-                    if (n4.getText().toString().equals(drawn)){
+                    if (n4.getText().toString().equals(drawn)) {
                         winSum++;
                         counttrue++;
-                        numbers.setText(counttrue+" out of 6");
+                        numbers.setText(counttrue + " out of 6");
                         n4.setBackgroundColor(0xffff0000);
                     }
 
-                    if (n5.getText().toString().equals(drawn)){
+                    if (n5.getText().toString().equals(drawn)) {
                         winSum++;
                         counttrue++;
-                        numbers.setText(counttrue+" out of 6");
+                        numbers.setText(counttrue + " out of 6");
                         n5.setBackgroundColor(0xffff0000);
                     }
 
-                    if (n6.getText().toString().equals(drawn)){
+                    if (n6.getText().toString().equals(drawn)) {
                         winSum++;
                         counttrue++;
-                        numbers.setText(counttrue+" out of 6");
+                        numbers.setText(counttrue + " out of 6");
                         n6.setBackgroundColor(0xffff0000);
                     }
 
@@ -189,10 +192,9 @@ public class MainActivity extends AppCompatActivity {
 
         score.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
 
                 String name2 = name.getText().toString().trim(); // ← خذ الاسم هنا بعد ما المستخدم يكتبه
-
 
 
                 Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
@@ -205,6 +207,53 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                CreateDialog();
+                dialog.show();
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+    }
+
+    private void CreateDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("exit");
+        alertDialog.setMessage("are you sure you want to exit");
+        alertDialog.setIcon(R.drawable.cutesadcinamon);
+        alertDialog.setCancelable(true);
+         dialog=alertDialog.create();
+        alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                System.exit(0);
+
+
+            }
+        });
+
+
+        alertDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialog.dismiss();
+            }
+        });
     }
 
 
