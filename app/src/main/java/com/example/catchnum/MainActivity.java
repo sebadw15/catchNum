@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
 
                                 try {
-                                    Thread.sleep(100);
+                                    Thread.sleep(500);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -219,16 +219,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
-
-
-
     }
+
 
     private void CreateDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -236,17 +228,15 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setMessage("are you sure you want to exit");
         alertDialog.setIcon(R.drawable.cutesadcinamon);
         alertDialog.setCancelable(true);
-         dialog=alertDialog.create();
+
+
         alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 finish();
                 System.exit(0);
-
-
             }
         });
-
 
         alertDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
             @Override
@@ -254,7 +244,19 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
+
+        alertDialog.setNeutralButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog = alertDialog.create();
     }
+
 
 
 }
