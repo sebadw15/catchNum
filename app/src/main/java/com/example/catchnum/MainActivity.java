@@ -1,6 +1,7 @@
 package com.example.catchnum;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,228 +34,182 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView n1, n2, n3, n4, n5, n6, random, numbers;
-    private int counttrue=0;
-    private Button start, newgame,score,exit;
-    private boolean isRunning;
-    private Random rand = new Random();
-    private int count=0,winSum=0,tgame=1;
-
-    private EditText name;
-    private AlertDialog dialog;
-
-    @SuppressLint("MissingInflatedId")
+    private TextView ranNum,points;
+    private TextView[] numberTextViews = new TextView[6];
+    private Button start,newButton,score,exit;
+    private int attempts=0,roundPlayed=0,totalTrue=0,totalGames=1;
+    private boolean isRunning = false;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable numGenerateRun;
+    private String currentPlayerName, playerAge;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        n1 = findViewById(R.id.num1);
-        n2 = findViewById(R.id.num2);
-        n3 = findViewById(R.id.num3);
-        n4 = findViewById(R.id.num4);
-        n5 = findViewById(R.id.num5);
-        n6 = findViewById(R.id.num6);
-        numbers = findViewById(R.id.points);
-        random = findViewById(R.id.randNum);
-        newgame = findViewById(R.id.newgame);
-        start = findViewById(R.id.startstop);
-        score = findViewById(R.id.scoreGame);
-        name = findViewById(R.id.editTextText);
-        exit = findViewById(R.id.button2);
-
-        n1.setText(String.valueOf(rand.nextInt(40) + 1));
-        n2.setText(String.valueOf(rand.nextInt(40) + 1));
-        n3.setText(String.valueOf(rand.nextInt(40) + 1));
-        n4.setText(String.valueOf(rand.nextInt(40) + 1));
-        n5.setText(String.valueOf(rand.nextInt(40) + 1));
-        n6.setText(String.valueOf(rand.nextInt(40) + 1));
-        random.setText("0");
-        numbers.setText("");
+        newButton = findViewById(R.id.button2);
+        numberTextViews[0] = findViewById(R.id.textView);
+        numberTextViews[1]=findViewById(R.id.textView2);
+        numberTextViews[2]=findViewById(R.id.textView3);
+        numberTextViews[3]=findViewById(R.id.textView4);
+        numberTextViews[4]=findViewById(R.id.textView5);
+        numberTextViews[5]=findViewById(R.id.textView6);
+        ranNum = findViewById(R.id.textView7);
+        start = findViewById(R.id.button);
+        points = findViewById(R.id.points);
+        score = findViewById(R.id.button3);
+        exit = findViewById(R.id.exitButton);
+        numberTextViews[0].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+        numberTextViews[1].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+        numberTextViews[2].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+        numberTextViews[3].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+        numberTextViews[4].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+        numberTextViews[5].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+        ranNum.setText("0");
+        points.setText("0 out of 6");
         start.setText("start");
         isRunning = false;
-        newgame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tgame++;
-                if (count > 5) {
-                    n1.setText(String.valueOf(rand.nextInt(40) + 1));
-                    n2.setText(String.valueOf(rand.nextInt(40) + 1));
-                    n3.setText(String.valueOf(rand.nextInt(40) + 1));
-                    n4.setText(String.valueOf(rand.nextInt(40) + 1));
-                    n5.setText(String.valueOf(rand.nextInt(40) + 1));
-                    n6.setText(String.valueOf(rand.nextInt(40) + 1));
-                    random.setText("0");
-                    numbers.setText("");
-                    start.setText("start");
-                    isRunning = false;
-                    count = 0;
-                    n1.setBackgroundColor(0);
-                    n2.setBackgroundColor(0);
-                    n3.setBackgroundColor(0);
-                    n4.setBackgroundColor(0);
-                    n5.setBackgroundColor(0);
-                    n6.setBackgroundColor(0);
-                }
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String playerName = extras.getString("PLAYER_NAME");
+            String playerAgee = extras.getString("PLAYER_AGE");
+            if (playerName != null && !playerName.isEmpty()) {
+                currentPlayerName = playerName;
             }
-        });
-        start.setOnClickListener(new View.OnClickListener() {
+            if (playerAgee != null && !playerAgee.isEmpty()) {
+                playerAge = playerAgee;
+            }
+        }
+
+        numGenerateRun = new Runnable() {
             @Override
-            public void onClick(View view) {
-                if (!isRunning && count < 6) {
-                    count++;
-                    isRunning = true;
-                    start.setText("stop");
-                    start.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (isRunning) {
-                                final int num = rand.nextInt(40) + 1;
-
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        random.setText(String.valueOf(num));
-                                    }
-                                });
-
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }).start();
-
-                } else {
-                    if (count == 6) {
-                        Toast.makeText(MainActivity.this, "انتهت اللعبة! اضغط New  لتبدأ من جديد.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    isRunning = false;
-                    start.setText("start");
-                    start.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
-                    String drawn = random.getText().toString();
-                    counttrue = 0;
-
-                    if (n1.getText().toString().equals(drawn)) {
-                        winSum++;
-                        counttrue++;
-                        numbers.setText(counttrue + " out of 6");
-                        n1.setBackgroundColor(0xffff0000);
-
-                    }
-
-                    if (n2.getText().toString().equals(drawn)) {
-                        winSum++;
-                        counttrue++;
-                        numbers.setText(counttrue + " out of 6");
-                        n2.setBackgroundColor(0xffff0000);
-                    }
-
-                    if (n3.getText().toString().equals(drawn)) {
-                        winSum++;
-                        counttrue++;
-                        numbers.setText(counttrue + " out of 6");
-                        n3.setBackgroundColor(0xffff0000);
-                    }
-
-                    if (n4.getText().toString().equals(drawn)) {
-                        winSum++;
-                        counttrue++;
-                        numbers.setText(counttrue + " out of 6");
-                        n4.setBackgroundColor(0xffff0000);
-                    }
-
-                    if (n5.getText().toString().equals(drawn)) {
-                        winSum++;
-                        counttrue++;
-                        numbers.setText(counttrue + " out of 6");
-                        n5.setBackgroundColor(0xffff0000);
-                    }
-
-                    if (n6.getText().toString().equals(drawn)) {
-                        winSum++;
-                        counttrue++;
-                        numbers.setText(counttrue + " out of 6");
-                        n6.setBackgroundColor(0xffff0000);
-                    }
-
+            public void run() {
+                if(isRunning){
+                    int num= (int) (Math.random() * 39 + 1);
+                    ranNum.setText(String.valueOf(num));
+                    handler.postDelayed(this,100);
                 }
             }
-        });
+        };
 
-
-        score.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String name2 = name.getText().toString().trim(); // ← خذ الاسم هنا بعد ما المستخدم يكتبه
-
-
-                Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
-                intent.putExtra("TOTAL_GAMES", tgame);
-                intent.putExtra("TOTAL_CORRECT_ATTEMPTS", winSum);
-                intent.putExtra("PLAYERNAME", name2);
-
-                startActivity(intent);
-            }
-        });
-
-
-
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                CreateDialog();
-                dialog.show();
+                Dialog d = new Dialog(MainActivity.this);
+                d.setContentView(R.layout.alert_dialog2);
+                if (d.getWindow() != null) {
+                    d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                }
+                Button btnYes = d.findViewById(R.id.btnYes);
+                Button btnNo = d.findViewById(R.id.btnNo);
 
+                btnYes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        d.dismiss();
+                        finishAffinity();
+                    }
+                });
+                btnNo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        d.dismiss();
+                    }
+                });
+                d.setCancelable(true);
+                d.show();
             }
         });
 
-    }
 
-
-    private void CreateDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("exit");
-        alertDialog.setMessage("are you sure you want to exit");
-        alertDialog.setIcon(R.drawable.cutesadcinamon);
-        alertDialog.setCancelable(true);
-
-
-        alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-                System.exit(0);
+            public void onClick(View view) {
+                if (roundPlayed > 6) {
+                    start.setText("Play Again");
+                    start.setBackgroundTintList(ColorStateList.valueOf(Color.BLUE));
+                    return;
+                }
+
+                if (!isRunning) {
+                    isRunning = true;
+                    start.setText("stop");
+                    start.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                    handler.post(numGenerateRun);
+                    roundPlayed++;
+
+
+                } else {
+
+                    isRunning = false;
+                    String value = ranNum.getText().toString();
+                    start.setText("start");
+                    start.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+
+
+
+                    for (int i = 0; i < numberTextViews.length; i++) {
+                        if (numberTextViews[i].getText().toString().equals(value) &&
+                                numberTextViews[i].getCurrentTextColor() != Color.GRAY) {
+                            attempts++;
+                            numberTextViews[i].setBackgroundColor(Color.CYAN);
+                            numberTextViews[i].setTextColor(Color.GRAY);
+                            totalTrue++;
+                        }
+
+                        points.setText(attempts + " out of 6");
+
+
+                    }
+
+                    if (roundPlayed < 6) {
+                        start.setText("Start");
+                        start.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                    } else {
+                        start.setText("Play Again");
+                        start.setBackgroundTintList(ColorStateList.valueOf(Color.BLUE));
+                        start.setEnabled(false);
+                    }
+                }
             }
         });
 
-        alertDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
+        newButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialog.dismiss();
+            public void onClick(View v) {
+                if(roundPlayed>5||start.getText().equals("Play Again"))
+                {start.setEnabled(true);
+                    totalGames++;
+                    attempts=0;
+                    points.setText("0 out of 6");
+                    roundPlayed=0;
+                    start.setText("start");
+                    start.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                    for (int i = 0; i < numberTextViews.length; i++) {
+                        numberTextViews[i].setText(String.valueOf((int) (Math.random() * 39 + 1)));
+                        numberTextViews[i].setBackgroundColor(Color.WHITE);
+                        numberTextViews[i].setTextColor(Color.BLACK);
+                    }
+                }
             }
         });
 
-
-        alertDialog.setNeutralButton("cancel", new DialogInterface.OnClickListener() {
+        score.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialog.dismiss();
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
+                intent.putExtra("TOTAL_GAMES", totalGames);
+                intent.putExtra("TOTAL_CORRECT_ATTEMPTS", totalTrue);
+                intent.putExtra("PLAYER_NAME", currentPlayerName);
+                intent.putExtra("PLAYER_AGE",playerAge);
+                startActivity(intent);
             }
         });
-
-
-        dialog = alertDialog.create();
     }
 
 

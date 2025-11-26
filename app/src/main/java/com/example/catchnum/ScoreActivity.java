@@ -1,5 +1,6 @@
 package com.example.catchnum;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,12 +15,10 @@ import androidx.core.view.WindowInsetsCompat;
 public class ScoreActivity extends AppCompatActivity {
     private TextView gamesPlayed;
     private TextView correctAttempts;
+    private TextView playerNameTextView,Age;
     private Button back;
 
-
-    private TextView playerName;
-
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,21 +26,30 @@ public class ScoreActivity extends AppCompatActivity {
 
         gamesPlayed = findViewById(R.id.totalGames);
         correctAttempts = findViewById(R.id.correct);
-        back = findViewById(R.id.button);
-        playerName = findViewById(R.id.playerName);
-
+        playerNameTextView = findViewById(R.id.playerNameTextView);
+        Age = findViewById(R.id.textView8);
+        back = findViewById(R.id.button4);
         back.setOnClickListener(view -> finish());
 
 
         Intent intent = getIntent();
-            int totalGames = intent.getIntExtra("TOTAL_GAMES", 0);
-            int totalCorrect = intent.getIntExtra("TOTAL_CORRECT_ATTEMPTS", 0);
-            String name = intent.getStringExtra("PLAYERNAME");
 
-            gamesPlayed.setText(String.valueOf(totalGames));
-            correctAttempts.setText(String.valueOf(totalCorrect));
-           playerName.setText(name+" "); // ← عرض الاسم الصحيح
+
+        int totalGames = intent.getIntExtra("TOTAL_GAMES", 0);
+        int totalCorrect = intent.getIntExtra("TOTAL_CORRECT_ATTEMPTS", 0);
+        String playerName = intent.getStringExtra("PLAYER_NAME");
+        String pAge = intent.getStringExtra("PLAYER_AGE");
+        gamesPlayed.setText(String.valueOf(totalGames));
+        correctAttempts.setText(String.valueOf(totalCorrect));
+        if (  playerName != null && !playerName.isEmpty() || pAge != null && !pAge.isEmpty()) {
+            playerNameTextView.setText(playerName);
+            Age.setText(pAge);
+        } else {
+            playerNameTextView.setText(" ");
+            Age.setText(" ");
         }
+        }
+
 
 
     }
